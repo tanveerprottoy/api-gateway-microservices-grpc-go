@@ -3,6 +3,7 @@ package src
 import (
 	"log"
 	"net/http"
+	"txp/gateway/src/grpc"
 )
 
 // App struct
@@ -14,6 +15,7 @@ type App struct {
 func (a *App) Init() {
 	a.router = &Router{}
 	a.router.Init()
+	grpc.Init()
 }
 
 // Run app

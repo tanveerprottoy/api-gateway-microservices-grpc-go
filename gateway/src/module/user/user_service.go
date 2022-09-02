@@ -1,31 +1,50 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"txp/gateway/src/core"
 	"txp/gateway/src/module/user/dto"
 	"txp/gateway/src/module/user/entity"
+	"txp/gateway/src/module/user/proto"
 	"txp/gateway/src/util"
 
 	"github.com/go-chi/chi"
 )
 
 type UserService struct {
-	// repo *UserRepository
+	client proto.UserServiceClient
 }
 
-func (s *UserService) Create(w http.ResponseWriter, r *http.Request) {
+func (s *UserService) Create(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 	var b *dto.CreateUpdateUserBody
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		util.RespondError(http.StatusBadRequest, err, w)
 		return
 	}
+	ctx := context.Background()
 	// send to service
-	// here
-
+	u, err := s.client.CreateUser(
+		ctx,
+		&proto.User{
+			Name: b.Name,
+		},
+	)
+	if err != nil {
+		util.RespondError(
+			http.StatusInternalServerError,
+			err,
+			w,
+		)
+	}
+	log.Print(u)
 	util.Respond(
 		http.StatusCreated,
 		map[string]bool{

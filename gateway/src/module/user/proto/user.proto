@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package userPackage;
 
-option go_package = "./src/grpc";
+option go_package = "./src/module/user/proto";
 
 message voidParam {}
 

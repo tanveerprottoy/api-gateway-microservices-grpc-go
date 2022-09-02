@@ -1,15 +1,22 @@
 package user
 
-import "net/http"
+import (
+	"net/http"
+	"txp/gateway/src/module/user/proto"
+
+	"txp/gateway/src/grpc"
+)
 
 type UserHandler struct {
 	service *UserService
 }
 
 func (h *UserHandler) InitDependencies() {
-	// repo := &UserRepository{}
+	client := proto.NewUserServiceClient(
+		grpc.Conn,
+	)
 	h.service = &UserService{
-		// repo: repo,
+		client: client,
 	}
 }
 
