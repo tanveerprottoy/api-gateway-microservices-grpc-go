@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package userPackage;
+
+option go_package = "./src/grpc";
+
+message voidParam {}
+
+message User {
+    int32 id = 1;
+    string name = 2;
+}
+
+message Users {
+    repeated User users = 1;
+}
+
+service UserService {
+    rpc createUser(User) returns (User);
+    rpc readUsers(voidParam) returns (Users);
+    rpc readUserStream(voidParam) returns (stream User);
+}
