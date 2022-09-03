@@ -8,7 +8,7 @@ import (
 
 var Conn *_grpc.ClientConn
 
-func Init() {
+func InitClient() {
 	var err error
 	Conn, err = _grpc.Dial(
 		"0.0.0.0:5000",

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package userPackage;
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = "./src/module/user/proto";
+
+message voidParam {}
+
+message User {
+    string id = 1;
+    string name = 2;
+}
+
+message Users {
+    repeated User users = 1;
+}
+
+service UserService {
+    rpc createUser(User) returns (User);
+    rpc readUsers(voidParam) returns (Users);
+    rpc readUserStream(voidParam) returns (stream User);
+    rpc readUser(google.protobuf.StringValue) returns (User);
+    rpc updateUser(User) returns (User);
+    rpc deleteUser(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+}

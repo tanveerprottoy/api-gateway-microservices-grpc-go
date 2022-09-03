@@ -1,10 +1,11 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
-	"txp/gateway/src/core"
+	"time"
 	"txp/gateway/src/module/user/dto"
 	"txp/gateway/src/module/user/proto"
 	"txp/gateway/src/util"
@@ -57,9 +58,11 @@ func (s *UserService) ReadMany(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
 	u, err := s.client.ReadUsers(
-		r.Context(),
-		nil,
+		ctx,
+		&proto.VoidParam{},
 		nil,
 	)
 	if err != nil {
@@ -78,7 +81,7 @@ func (s *UserService) ReadMany(
 }
 
 func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
-	userId := chi.URLParam(r, core.UrlKeyId)
+	userId := chi.URLParam(r, util.UrlKeyId)
 	u, err := s.client.ReadUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
@@ -103,7 +106,7 @@ func (s *UserService) Update(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	userId := chi.URLParam(r, core.UrlKeyId)
+	userId := chi.URLParam(r, util.UrlKeyId)
 	var b *dto.CreateUpdateUserBody
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
@@ -138,7 +141,7 @@ func (s *UserService) Update(
 }
 
 func (s *UserService) Delete(w http.ResponseWriter, r *http.Request) {
-	userId := chi.URLParam(r, core.UrlKeyId)
+	userId := chi.URLParam(r, util.UrlKeyId)
 	u, err := s.client.DeleteUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
