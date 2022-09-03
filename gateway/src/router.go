@@ -42,11 +42,11 @@ func (r *Router) registerUserRoutes(
 		func(r chi.Router) {
 			r.Get(
 				util.RootPattern,
-				h.FindAll,
+				h.ReadMany,
 			)
 			r.Get(
 				util.RootPattern+":id",
-				h.FindOne,
+				h.ReadOne,
 			)
 			r.Post(
 				util.RootPattern,

@@ -27,15 +27,15 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func (h *UserHandler) FindAll(w http.ResponseWriter, r *http.Request) {
-	h.service.FindAll(
+func (h *UserHandler) ReadMany(w http.ResponseWriter, r *http.Request) {
+	h.service.ReadMany(
 		w,
 		r,
 	)
 }
 
-func (h *UserHandler) FindOne(w http.ResponseWriter, r *http.Request) {
-	h.service.FindOne(
+func (h *UserHandler) ReadOne(w http.ResponseWriter, r *http.Request) {
+	h.service.ReadOne(
 		w,
 		r,
 	)
