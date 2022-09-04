@@ -63,7 +63,6 @@ func (s *UserService) ReadMany(
 	u, err := s.client.ReadUsers(
 		ctx,
 		&proto.VoidParam{},
-		nil,
 	)
 	if err != nil {
 		util.RespondError(

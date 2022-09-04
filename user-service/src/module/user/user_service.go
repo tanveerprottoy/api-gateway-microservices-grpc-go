@@ -17,19 +17,19 @@ func (s *UserService) Create(
 	return &proto.User{}, nil
 }
 
-func (s *UserService) ReadUserStream(
-	v *proto.VoidParam,
-	serv proto.UserService_ReadUserStreamServer,
-) (*proto.Users, error) {
-	return &proto.Users{}, nil
-}
-
 func (s *UserService) ReadMany(
 	ctx context.Context,
 	v *proto.VoidParam,
 ) (*proto.Users, error) {
 	return &proto.Users{}, nil
 }
+
+/* func (s *UserService) ReadUserStream(
+	v *proto.VoidParam,
+	serv proto.UserService_ReadUserStreamServer,
+) (*proto.Users, error) {
+	return &proto.Users{}, nil
+} */
 
 func (s *UserService) ReadOne(
 	ctx context.Context,

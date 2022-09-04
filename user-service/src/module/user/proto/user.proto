@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package userPackage;
 
-import "google/protobuf/wrappers.proto";
+// import "google/protobuf/wrappers.proto";
 
 option go_package = "./src/module/user/proto";
 
@@ -18,10 +18,10 @@ message Users {
 }
 
 service UserService {
-    rpc createUser(User) returns (User);
+    // rpc createUser(User) returns (User);
     rpc readUsers(voidParam) returns (Users);
-    rpc readUserStream(voidParam) returns (stream User);
+    /* rpc readUserStream(voidParam) returns (stream User);
     rpc readUser(google.protobuf.StringValue) returns (User);
     rpc updateUser(User) returns (User);
-    rpc deleteUser(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+    rpc deleteUser(google.protobuf.StringValue) returns (google.protobuf.BoolValue); */
 }

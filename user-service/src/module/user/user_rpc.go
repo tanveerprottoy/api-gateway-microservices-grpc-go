@@ -36,16 +36,16 @@ func (h *UserRPC) ReadUsers(
 	)
 }
 
-func (h *UserRPC) ReadUserStream(
+/* func (h *UserRPC) ReadUserStream(
 	v *proto.VoidParam,
 	serv proto.UserService_ReadUserStreamServer,
 ) (*proto.Users, error) {
 	return nil, nil
-	/* h.service.ReadMany(
+	h.service.ReadMany(
 		ctx,
 		v,
-	) */
-}
+	)
+} */
 
 func (h *UserRPC) ReadUser(
 	ctx context.Context,

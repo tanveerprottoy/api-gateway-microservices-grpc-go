@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"txp/userservice/src/module/user"
 	"txp/userservice/src/module/user/proto"
 
 	_grpc "google.golang.org/grpc"
@@ -26,10 +25,10 @@ func InitServer() {
 }
 
 func RegisterRPCs() {
-	h := &user.UserRPC{}
-	h.InitDependencies()
+	/* h := &user.UserRPC{}
+	h.InitDependencies() */
 	proto.RegisterUserServiceServer(
 		Server,
-		h.UnimplementedUserServiceServer,
+		&GServer{}, // h.UnimplementedUserServiceServer,
 	)
 }
