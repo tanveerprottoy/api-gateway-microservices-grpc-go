@@ -1,11 +1,10 @@
 package user
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
+	"txp/gateway/src/grpc"
 	"txp/gateway/src/module/user/dto"
 	"txp/gateway/src/module/user/proto"
 	"txp/gateway/src/util"
@@ -15,7 +14,6 @@ import (
 )
 
 type UserService struct {
-	client proto.UserServiceClient
 }
 
 func (s *UserService) Create(
@@ -30,7 +28,7 @@ func (s *UserService) Create(
 	}
 	// ctx := context.Background()
 	// send to service
-	u, err := s.client.CreateUser(
+	u, err := grpc.UserClient.CreateUser(
 		r.Context(),
 		&proto.User{
 			Name: b.Name,
@@ -58,12 +56,13 @@ func (s *UserService) ReadMany(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	u, err := s.client.ReadUsers(
-		ctx,
+	u, err := grpc.UserClient.ReadUsers(
+		r.Context(),
 		&proto.VoidParam{},
 	)
+/* 	c := proto.NewUserServiceClient(grpc.Conn)
+	res, err := c.ReadUsers(r.Context(), &proto.VoidParam{})
+	log.Print(res) */
 	if err != nil {
 		util.RespondError(
 			http.StatusInternalServerError,
@@ -81,7 +80,7 @@ func (s *UserService) ReadMany(
 
 func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	u, err := s.client.ReadUser(
+	u, err := grpc.UserClient.ReadUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
 		nil,
@@ -116,7 +115,7 @@ func (s *UserService) Update(
 		)
 		return
 	}
-	u, err := s.client.UpdateUser(
+	u, err := grpc.UserClient.UpdateUser(
 		r.Context(),
 		&proto.User{
 			Id:   userId,
@@ -141,7 +140,7 @@ func (s *UserService) Update(
 
 func (s *UserService) Delete(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	u, err := s.client.DeleteUser(
+	u, err := grpc.UserClient.DeleteUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
 		nil,

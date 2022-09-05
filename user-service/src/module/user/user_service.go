@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"log"
 	"txp/userservice/src/module/user/proto"
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -21,6 +22,7 @@ func (s *UserService) ReadMany(
 	ctx context.Context,
 	v *proto.VoidParam,
 ) (*proto.Users, error) {
+	log.Print("ReadMany rpc")
 	return &proto.Users{}, nil
 }
 

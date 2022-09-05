@@ -2,9 +2,6 @@ package user
 
 import (
 	"net/http"
-	"txp/gateway/src/module/user/proto"
-
-	"txp/gateway/src/grpc"
 )
 
 type UserHandler struct {
@@ -12,12 +9,7 @@ type UserHandler struct {
 }
 
 func (h *UserHandler) InitDependencies() {
-	client := proto.NewUserServiceClient(
-		grpc.Conn,
-	)
-	h.service = &UserService{
-		client: client,
-	}
+	h.service = &UserService{}
 }
 
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
