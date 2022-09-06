@@ -13,7 +13,10 @@ type UserRPC struct {
 }
 
 func (h *UserRPC) InitDependencies() {
-	h.service = &UserService{}
+	r := &UserRepository{}
+	h.service = &UserService{
+		repo: r,
+	}
 }
 
 func (h *UserRPC) CreateUser(

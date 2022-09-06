@@ -9,6 +9,7 @@ import (
 )
 
 type UserService struct {
+	repo *UserRepository
 }
 
 func (s *UserService) Create(
@@ -23,7 +24,7 @@ func (s *UserService) ReadMany(
 	v *proto.VoidParam,
 ) (*proto.Users, error) {
 	log.Print("ReadMany rpc")
-	return &proto.Users{}, nil
+	return s.repo.FindMany(), nil
 }
 
 /* func (s *UserService) ReadUserStream(
