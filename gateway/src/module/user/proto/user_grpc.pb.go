@@ -27,7 +27,7 @@ type UserServiceClient interface {
 	ReadUsers(ctx context.Context, in *VoidParam, opts ...grpc.CallOption) (*Users, error)
 	ReadUserStream(ctx context.Context, in *VoidParam, opts ...grpc.CallOption) (UserService_ReadUserStreamClient, error)
 	ReadUser(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*User, error)
-	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	UpdateUser(ctx context.Context, in *UpdateUserParam, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
 }
 
@@ -98,7 +98,7 @@ func (c *userServiceClient) ReadUser(ctx context.Context, in *wrapperspb.StringV
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserParam, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/userPackage.UserService/updateUser", in, out, opts...)
 	if err != nil {
@@ -124,7 +124,7 @@ type UserServiceServer interface {
 	ReadUsers(context.Context, *VoidParam) (*Users, error)
 	ReadUserStream(*VoidParam, UserService_ReadUserStreamServer) error
 	ReadUser(context.Context, *wrapperspb.StringValue) (*User, error)
-	UpdateUser(context.Context, *User) (*User, error)
+	UpdateUser(context.Context, *UpdateUserParam) (*User, error)
 	DeleteUser(context.Context, *wrapperspb.StringValue) (*wrapperspb.BoolValue, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -145,7 +145,7 @@ func (UnimplementedUserServiceServer) ReadUserStream(*VoidParam, UserService_Rea
 func (UnimplementedUserServiceServer) ReadUser(context.Context, *wrapperspb.StringValue) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadUser not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*User, error) {
+func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserParam) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *wrapperspb.StringValue) (*wrapperspb.BoolValue, error) {
@@ -240,7 +240,7 @@ func _UserService_ReadUser_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(UpdateUserParam)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/userPackage.UserService/updateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateUser(ctx, req.(*User))
+		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UpdateUserParam))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -60,9 +60,9 @@ func (s *UserService) ReadMany(
 		r.Context(),
 		&proto.VoidParam{},
 	)
-/* 	c := proto.NewUserServiceClient(grpc.Conn)
-	res, err := c.ReadUsers(r.Context(), &proto.VoidParam{})
-	log.Print(res) */
+	/* 	c := proto.NewUserServiceClient(grpc.Conn)
+	   	res, err := c.ReadUsers(r.Context(), &proto.VoidParam{})
+	   	log.Print(res) */
 	if err != nil {
 		util.RespondError(
 			http.StatusInternalServerError,
@@ -117,9 +117,11 @@ func (s *UserService) Update(
 	}
 	u, err := grpc.UserClient.UpdateUser(
 		r.Context(),
-		&proto.User{
-			Id:   userId,
-			Name: b.Name,
+		&proto.UpdateUserParam{
+			Id: userId,
+			User: &proto.User{
+				Name: b.Name,
+			},
 		},
 		nil,
 	)

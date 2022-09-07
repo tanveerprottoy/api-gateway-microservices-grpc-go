@@ -62,11 +62,11 @@ func (h *UserRPC) ReadUser(
 
 func (h *UserRPC) UpdateUser(
 	ctx context.Context,
-	u *proto.User,
+	p *proto.UpdateUserParam,
 ) (*proto.User, error) {
 	return h.service.Update(
 		ctx,
-		u,
+		p,
 	)
 }
 
