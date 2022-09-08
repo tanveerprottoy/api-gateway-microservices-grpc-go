@@ -1,0 +1,81 @@
+package content
+
+import (
+	"context"
+	"txp/contentservice/src/module/content/proto"
+
+	"google.golang.org/protobuf/types/known/wrapperspb"
+)
+
+type ContentRPC struct {
+	proto.UnimplementedContentServiceServer
+	service *ContentService
+}
+
+func (h *ContentRPC) InitDependencies() {
+	r := &ContentRepository{}
+	h.service = &ContentService{
+		repo: r,
+	}
+}
+
+func (h *ContentRPC) CreateContent(
+	ctx context.Context,
+	u *proto.Content,
+) (*proto.Content, error) {
+	return h.service.Create(
+		ctx,
+		u,
+	)
+}
+
+func (h *ContentRPC) ReadContents(
+	ctx context.Context,
+	v *proto.VoidParam,
+) (*proto.Contents, error) {
+	return h.service.ReadMany(
+		ctx,
+		v,
+	)
+}
+
+/* func (h *ContentRPC) ReadContentStream(
+	v *proto.VoidParam,
+	serv proto.ContentService_ReadContentStreamServer,
+) (*proto.Contents, error) {
+	return nil, nil
+	h.service.ReadMany(
+		ctx,
+		v,
+	)
+} */
+
+func (h *ContentRPC) ReadContent(
+	ctx context.Context,
+	strVal *wrapperspb.StringValue,
+) (*proto.Content, error) {
+	return h.service.ReadOne(
+		ctx,
+		strVal,
+	)
+}
+
+func (h *ContentRPC) UpdateContent(
+	ctx context.Context,
+	p *proto.UpdateContentParam,
+) (*proto.Content, error) {
+	return h.service.Update(
+		ctx,
+		p,
+	)
+}
+
+func (h *ContentRPC) DeleteContent(
+	ctx context.Context,
+	strVal *wrapperspb.StringValue,
+) (*wrapperspb.BoolValue, error) {
+	return h.service.Delete(
+		ctx,
+		strVal,
+	)
+}

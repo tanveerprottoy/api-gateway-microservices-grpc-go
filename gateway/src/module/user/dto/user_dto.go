@@ -1,5 +1,5 @@
 package dto
 
-type CreateUpdateUserBody struct {
+type CreateUpdateUserDto struct {
 	Name string `db:"name" json:"name"`
 }

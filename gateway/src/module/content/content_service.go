@@ -1,189 +1,156 @@
 package content
 
+import (
+	"encoding/json"
+	"net/http"
+	"txp/gateway/src/grpc"
+	"txp/gateway/src/module/content/dto"
+	"txp/gateway/src/module/content/proto"
+	"txp/gateway/src/util"
+
+	"github.com/go-chi/chi"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+)
+
 type ContentService struct {
-	// repo *ContentRepository
 }
 
-/* func (s *ContentService) Create(w http.ResponseWriter, r *http.Request) {
-	var p *dto.CreateUpdateContentBody
-	err := ctx.ShouldBindJSON(&p)
+func (s *ContentService) Create(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	var b *dto.CreateUpdateContentDto
+	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
-		util.ErrorAbort(
-			http.StatusBadRequest,
-			util.BadRequest,
-			w,
-		r,
-		)
+		util.RespondError(http.StatusBadRequest, err, w)
 		return
 	}
-	_, err = s.repo.Create(
-		p,
+	// ctx := context.Background()
+	// send to service
+	_, err = grpc.ContentServiceClient.CreateContent(
+		r.Context(),
+		&proto.Content{
+			Name: b.Name,
+		},
 	)
 	if err != nil {
-		util.ErrorAbort(
+		util.RespondError(
 			http.StatusInternalServerError,
-			err.Error(),
+			err,
 			w,
-		r,
 		)
 		return
 	}
 	util.Respond(
 		http.StatusCreated,
-		map[string]bool{
-			"created": true,
+		b,
+		w,
+	)
+}
+
+func (s *ContentService) ReadMany(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	u, err := grpc.ContentServiceClient.ReadContents(
+		r.Context(),
+		&proto.VoidParam{},
+	)
+	if err != nil {
+		util.RespondError(
+			http.StatusInternalServerError,
+			err,
+			w,
+		)
+		return
+	}
+	util.Respond(
+		http.StatusOK,
+		u,
+		w,
+	)
+}
+
+func (s *ContentService) ReadOne(w http.ResponseWriter, r *http.Request) {
+	userId := chi.URLParam(r, util.UrlKeyId)
+	u, err := grpc.ContentServiceClient.ReadContent(
+		r.Context(),
+		&wrapperspb.StringValue{Value: userId},
+		nil,
+	)
+	if err != nil {
+		util.RespondError(
+			http.StatusInternalServerError,
+			err,
+			w,
+		)
+		return
+	}
+	util.Respond(
+		http.StatusOK,
+		u,
+		w,
+	)
+}
+
+func (s *ContentService) Update(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	userId := chi.URLParam(r, util.UrlKeyId)
+	var b *dto.CreateUpdateContentDto
+	err := json.NewDecoder(r.Body).Decode(&b)
+	if err != nil {
+		util.RespondError(
+			http.StatusBadRequest,
+			err,
+			w,
+		)
+		return
+	}
+	u, err := grpc.ContentServiceClient.UpdateContent(
+		r.Context(),
+		&proto.UpdateContentParam{
+			Id: userId,
+			Content: &proto.Content{
+				Name: b.Name,
+			},
 		},
-		w,
-		r,
+		nil,
 	)
-}
-
-func (s *ContentService) FindAll(w http.ResponseWriter, r *http.Request) {
-	Contents, err := s.repo.FindAll()
 	if err != nil {
-		util.ErrorAbort(
-			http.StatusBadRequest,
-			util.BadRequest,
+		util.RespondError(
+			http.StatusInternalServerError,
+			err,
 			w,
-		r,
 		)
 		return
 	}
 	util.Respond(
 		http.StatusOK,
-		Contents,
+		u,
 		w,
-		r,
-	)
-}
-
-func (s *ContentService) FindOne(w http.ResponseWriter, r *http.Request) {
-	id, exists := ctx.Params.Get("id")
-	if !exists {
-		util.ErrorAbort(
-			http.StatusBadRequest,
-			util.BadRequest,
-			w,
-		r,
-		)
-		return
-	}
-	Content, err := s.repo.FindOne(
-		id,
-	)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			util.ErrorAbort(
-				http.StatusNotFound,
-				util.NotFound,
-				w,
-		r,
-			)
-			return
-		}
-		ctx.AbortWithError(
-			http.StatusInternalServerError,
-			errors.New(
-				util.InternalServerError,
-			),
-		)
-		/* util.ErrorAbort(
-			http.StatusInternalServerError,
-			util.InternalServerError,
-			w,
-		r,
-		)
-		return
-	}
-	util.Respond(
-		http.StatusOK,
-		Content,
-		w,
-		r,
-	)
-}
-
-func (s *ContentService) Update(w http.ResponseWriter, r *http.Request) {
-	id, exists := ctx.Params.Get("id")
-	if !exists {
-		util.ErrorAbort(
-			http.StatusBadRequest,
-			util.BadRequest,
-			w,
-		r,
-		)
-		return
-	}
-	var p *entity.Content
-	err := ctx.ShouldBindJSON(&p)
-	if err != nil {
-		util.ErrorAbort(
-			http.StatusBadRequest,
-			util.BadRequest,
-			w,
-		r,
-		)
-		return
-	}
-	rows, err := s.repo.Update(
-		id,
-		p,
-	)
-	if err != nil {
-		util.ErrorAbort(
-			http.StatusInternalServerError,
-			util.InternalServerError,
-			w,
-		r,
-		)
-		return
-	}
-	if rows > 0 {
-		util.Respond(
-			http.StatusOK,
-			map[string]int64{util.RowsAffected: rows},
-			w,
-		r,
-		)
-		return
-	}
-	util.ErrorAbort(
-		http.StatusInternalServerError,
-		util.InternalServerError,
-		w,
-		r,
 	)
 }
 
 func (s *ContentService) Delete(w http.ResponseWriter, r *http.Request) {
-	id, exists := ctx.Params.Get("id")
-	if !exists {
-		util.RespondError(
-			http.StatusBadRequest,
-			errors.New(
-				util.BadRequest,
-			),
-			w,
-		r,
-		)
-		return
-	}
-	rows, err := s.repo.Delete(
-		id,
+	userId := chi.URLParam(r, util.UrlKeyId)
+	u, err := grpc.UserServiceClient.DeleteUser(
+		r.Context(),
+		&wrapperspb.StringValue{Value: userId},
+		nil,
 	)
 	if err != nil {
-		util.ErrorAbort(
+		util.RespondError(
 			http.StatusInternalServerError,
-			util.InternalServerError,
+			err,
 			w,
-		r,
 		)
 		return
 	}
 	util.Respond(
 		http.StatusOK,
-		map[string]int64{util.RowsAffected: rows},
+		u,
 		w,
-		r,
 	)
-} */
+}

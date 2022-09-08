@@ -1,47 +1,61 @@
 package content
 
+import "net/http"
+
 type ContentHandler struct {
 	service *ContentService
 }
 
-/* func (h *ContentHandler) InitDependencies() {
-	repo := &ContentRepository{}
-	h.service = &ContentService{
-		repo: repo,
-	}
+func (h *ContentHandler) InitDependencies() {
+	h.service = &ContentService{}
 }
 
-func (h *ContentHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *ContentHandler) Create(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 	h.service.Create(
 		w,
 		r,
 	)
 }
 
-func (h *ContentHandler) FindAll(w http.ResponseWriter, r *http.Request) {
-	h.service.FindAll(
+func (h *ContentHandler) ReadMany(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	h.service.ReadMany(
 		w,
 		r,
 	)
 }
 
-func (h *ContentHandler) FindOne(w http.ResponseWriter, r *http.Request) {
-	h.service.FindOne(
+func (h *ContentHandler) ReadOne(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
+	h.service.ReadOne(
 		w,
 		r,
 	)
 }
 
-func (h *ContentHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *ContentHandler) Update(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 	h.service.Update(
 		w,
 		r,
 	)
 }
 
-func (h *ContentHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *ContentHandler) Delete(
+	w http.ResponseWriter,
+	r *http.Request,
+) {
 	h.service.Delete(
 		w,
 		r,
 	)
-} */
+}

@@ -15,7 +15,7 @@ type App struct {
 func (a *App) Init() {
 	a.router = &Router{}
 	a.router.Init()
-	grpc.InitClientConn()
+	grpc.InitClientConns()
 	grpc.InitServiceClients()
 }
 

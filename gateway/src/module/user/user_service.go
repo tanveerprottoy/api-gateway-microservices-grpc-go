@@ -20,7 +20,7 @@ func (s *UserService) Create(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	var b *dto.CreateUpdateUserBody
+	var b *dto.CreateUpdateUserDto
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		util.RespondError(http.StatusBadRequest, err, w)
@@ -28,7 +28,7 @@ func (s *UserService) Create(
 	}
 	// ctx := context.Background()
 	// send to service
-	u, err := grpc.UserClient.CreateUser(
+	u, err := grpc.UserServiceClient.CreateUser(
 		r.Context(),
 		&proto.User{
 			Name: b.Name,
@@ -56,13 +56,10 @@ func (s *UserService) ReadMany(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	u, err := grpc.UserClient.ReadUsers(
+	u, err := grpc.UserServiceClient.ReadUsers(
 		r.Context(),
 		&proto.VoidParam{},
 	)
-	/* 	c := proto.NewUserServiceClient(grpc.Conn)
-	   	res, err := c.ReadUsers(r.Context(), &proto.VoidParam{})
-	   	log.Print(res) */
 	if err != nil {
 		util.RespondError(
 			http.StatusInternalServerError,
@@ -80,7 +77,7 @@ func (s *UserService) ReadMany(
 
 func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	u, err := grpc.UserClient.ReadUser(
+	u, err := grpc.UserServiceClient.ReadUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
 		nil,
@@ -105,7 +102,7 @@ func (s *UserService) Update(
 	r *http.Request,
 ) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	var b *dto.CreateUpdateUserBody
+	var b *dto.CreateUpdateUserDto
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		util.RespondError(
@@ -115,7 +112,7 @@ func (s *UserService) Update(
 		)
 		return
 	}
-	u, err := grpc.UserClient.UpdateUser(
+	u, err := grpc.UserServiceClient.UpdateUser(
 		r.Context(),
 		&proto.UpdateUserParam{
 			Id: userId,
@@ -142,7 +139,7 @@ func (s *UserService) Update(
 
 func (s *UserService) Delete(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	u, err := grpc.UserClient.DeleteUser(
+	u, err := grpc.UserServiceClient.DeleteUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
 		nil,
