@@ -1,6 +1,7 @@
 package content
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"txp/contentservice/src/data"
@@ -11,62 +12,53 @@ type ContentRepository struct {
 }
 
 func (r *ContentRepository) Create(
-	u *proto.Content,
-) (*string, error) {
-	var lastId *string = nil
-	stmt, err := data.Db.PrepareNamed(
-		"INSERT INTO Contents (name)" +
-			"VALUES (:name) RETURNING id",
+	e *proto.Content,
+) (string, error) {
+	var lastId string = ""
+	result, err := data.DB.Exec(
+		"INSERT INTO contents (name)"+
+			"VALUES ($1) RETURNING id",
+		e.Name,
 	)
 	if err != nil {
 		log.Println(err)
 		return lastId, err
 	}
-	err = stmt.Get(&lastId, u)
 	if err != nil {
 		log.Println(err)
 	}
-	err = stmt.Close()
-	if err != nil {
-		log.Println(err)
-	}
+	temp, _ := result.LastInsertId()
+	lastId = fmt.Sprintf("%d", temp)
 	return lastId, nil
 }
 
-func (r *ContentRepository) ReadMany() (
-	*proto.Contents,
-	error,
-) {
-	Contents := &proto.Contents{}
-	err := data.Db.Select(
-		&Contents,
-		"SELECT * FROM Contents WHERE id > $1",
-		fmt.Sprintf("%d", 0),
+func (r *ContentRepository) ReadMany() (*sql.Rows, error) {
+	rows, err := data.DB.Query(
+		"SELECT * FROM contents", // WHERE id IS NOT NULL
 	)
-	return Contents, err
+	if err != nil {
+		return nil, fmt.Errorf("ReadMany %v", err)
+	}
+	return rows, nil
 }
 
-func (r *ContentRepository) ReadOne(id string) (
-	*proto.Content,
-	error,
-) {
-	u := &proto.Content{}
-	err := data.Db.Get(
-		&u,
-		"SELECT * FROM Contents WHERE id = $1 LIMIT 1",
+func (r *ContentRepository) ReadOne(id string) *sql.Row {
+	row := data.DB.QueryRow(
+		"SELECT * FROM contents WHERE id = $1 LIMIT 1",
 		id,
 	)
-	return u, err
+	return row
 }
 
 func (r *ContentRepository) Update(
 	id string,
-	u *proto.Content,
+	e *proto.Content,
 ) (int64, error) {
-	q := "UPDATE Contents SET name=:name WHERE id = " + id
-	res, err := data.Db.NamedExec(
+	q := "UPDATE contents SET name = $2 WHERE id = $1"
+	res, err := data.DB.Exec(
 		q,
-		u,
+		id,
+		e.Name,
 	)
 	if err != nil {
 		log.Println(err)
@@ -75,12 +67,9 @@ func (r *ContentRepository) Update(
 	return data.GetRowsAffected(res), nil
 }
 
-func (r *ContentRepository) Delete(id string) (
-	int64,
-	error,
-) {
-	q := "DELETE FROM Contents WHERE id = $1"
-	res, err := data.Db.Exec(
+func (r *ContentRepository) Delete(id string) (int64, error) {
+	q := "DELETE FROM contents WHERE id = $1"
+	res, err := data.DB.Exec(
 		q,
 		id,
 	)

@@ -45,7 +45,7 @@ func (r *Router) registerUserRoutes(
 				h.ReadMany,
 			)
 			r.Get(
-				util.RootPattern+":id",
+				util.RootPattern+"{id}",
 				h.ReadOne,
 			)
 			r.Post(
@@ -53,11 +53,11 @@ func (r *Router) registerUserRoutes(
 				h.Create,
 			)
 			r.Patch(
-				util.RootPattern+":id",
+				util.RootPattern+"{id}",
 				h.Update,
 			)
 			r.Delete(
-				util.RootPattern+":id",
+				util.RootPattern+"{id}",
 				h.Delete,
 			)
 		},

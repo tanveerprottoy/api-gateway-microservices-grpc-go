@@ -21,10 +21,11 @@ func (a *App) Init() {
 
 // Run app
 func (a *App) Run() {
-	log.Fatal(
-		http.ListenAndServe(
-			":8080",
-			a.router.Mux,
-		),
+	err := http.ListenAndServe(
+		":8080",
+		a.router.Mux,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

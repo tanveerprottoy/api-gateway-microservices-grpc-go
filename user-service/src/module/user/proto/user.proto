@@ -3,12 +3,15 @@ syntax = "proto3";
 package userPackage;
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "./src/module/user/proto";
 
 message User {
     string id = 1;
     string name = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
 }
 
 message Users {

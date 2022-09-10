@@ -1,23 +1,23 @@
 package data
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
- const (
+const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
 	password = "root"
-	dbname   = "web_service_gin"
+	dbname   = "gateway_service"
 )
 
 var (
-	Db  *sqlx.DB
+	DB  *sql.DB
 	err error
 )
 
@@ -32,12 +32,12 @@ func Init() {
 		password,
 		dbname,
 	)
-	Db, err = sqlx.Open("postgres", args)
+	DB, err = sql.Open("postgres", args)
 	if err != nil {
 		panic(err)
 	}
 	// ping is necessary to create connection
-	err = Db.Ping()
+	err = DB.Ping()
 	if err != nil {
 		panic(err)
 	}

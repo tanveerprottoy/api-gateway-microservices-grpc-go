@@ -80,7 +80,6 @@ func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
 	u, err := grpc.UserServiceClient.ReadUser(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
-		nil,
 	)
 	if err != nil {
 		util.RespondError(

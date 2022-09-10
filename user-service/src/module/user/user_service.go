@@ -2,11 +2,14 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 	"txp/userservice/src/module/user/proto"
 	"txp/userservice/src/util"
 
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -21,7 +24,7 @@ func (s *UserService) Create(
 	l, err := s.repo.Create(
 		u,
 	)
-	if err != nil || l != nil {
+	if err != nil || l != "" {
 		return nil, util.RespondError(
 			codes.Unknown,
 			util.UnknownError,
@@ -35,7 +38,33 @@ func (s *UserService) ReadMany(
 	v *proto.VoidParam,
 ) (*proto.Users, error) {
 	log.Print("ReadMany rpc")
-	return s.repo.ReadMany()
+	d := &proto.Users{}
+	rows, err := s.repo.ReadMany()
+	var (
+		users      []*proto.User
+		id         string
+		name       string
+		created_at time.Time
+		updated_at time.Time
+	)
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		if err := rows.Scan(&id, &name, &created_at, &updated_at); err != nil {
+			return nil, fmt.Errorf("ReadMany %v", err)
+		}
+		users = append(users, &proto.User{
+			Id:   id,
+			Name: name,
+			CreatedAt: timestamppb.New(
+				created_at,
+			),
+			UpdatedAt: timestamppb.New(
+				updated_at,
+			),
+		})
+	}
+	d.Users = users
+	return d, err
 }
 
 /* func (s *UserService) ReadUserStream(
@@ -49,20 +78,33 @@ func (s *UserService) ReadOne(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*proto.User, error) {
-	u, err := s.repo.ReadOne(
+	row := s.repo.ReadOne(
 		strVal.Value,
 	)
-	if err != nil {
-		return nil, util.RespondError(
-			codes.Unknown,
-			util.UnknownError,
-		)
-	}
-	if u != nil {
+	if row == nil {
 		return nil, util.RespondError(
 			codes.NotFound,
 			util.NotFound,
 		)
+	}
+	var (
+		id         string
+		name       string
+		created_at time.Time
+		updated_at time.Time
+	)
+	if err := row.Scan(&id, &name, &created_at, &updated_at); err != nil {
+		return nil, fmt.Errorf("ReadOne %v", err)
+	}
+	u := &proto.User{
+		Id:   id,
+		Name: name,
+		CreatedAt: timestamppb.New(
+			created_at,
+		),
+		UpdatedAt: timestamppb.New(
+			updated_at,
+		),
 	}
 	return u, nil
 }

@@ -2,11 +2,14 @@ package content
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 	"txp/contentservice/src/module/content/proto"
 	"txp/contentservice/src/util"
 
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -21,7 +24,7 @@ func (s *ContentService) Create(
 	l, err := s.repo.Create(
 		u,
 	)
-	if err != nil || l != nil {
+	if err != nil || l != "" {
 		return nil, util.RespondError(
 			codes.Unknown,
 			util.UnknownError,
@@ -35,12 +38,38 @@ func (s *ContentService) ReadMany(
 	v *proto.VoidParam,
 ) (*proto.Contents, error) {
 	log.Print("ReadMany rpc")
-	return s.repo.ReadMany()
+	d := &proto.Contents{}
+	rows, err := s.repo.ReadMany()
+	var (
+		contents      []*proto.Content
+		id         string
+		name       string
+		created_at time.Time
+		updated_at time.Time
+	)
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		if err := rows.Scan(&id, &name, &created_at, &updated_at); err != nil {
+			return nil, fmt.Errorf("ReadMany %v", err)
+		}
+		contents = append(contents, &proto.Content{
+			Id:   id,
+			Name: name,
+			CreatedAt: timestamppb.New(
+				created_at,
+			),
+			UpdatedAt: timestamppb.New(
+				updated_at,
+			),
+		})
+	}
+	d.Contents = contents
+	return d, err
 }
 
-/* func (s *ContentService) ReadContentStream(
+/* func (s *ContentService) Readcontentstream(
 	v *proto.VoidParam,
-	serv proto.ContentService_ReadContentStreamServer,
+	serv proto.ContentService_ReadcontentstreamServer,
 ) (*proto.Contents, error) {
 	return &proto.Contents{}, nil
 } */
@@ -49,20 +78,33 @@ func (s *ContentService) ReadOne(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*proto.Content, error) {
-	u, err := s.repo.ReadOne(
+	row := s.repo.ReadOne(
 		strVal.Value,
 	)
-	if err != nil {
-		return nil, util.RespondError(
-			codes.Unknown,
-			util.UnknownError,
-		)
-	}
-	if u != nil {
+	if row == nil {
 		return nil, util.RespondError(
 			codes.NotFound,
 			util.NotFound,
 		)
+	}
+	var (
+		id         string
+		name       string
+		created_at time.Time
+		updated_at time.Time
+	)
+	if err := row.Scan(&id, &name, &created_at, &updated_at); err != nil {
+		return nil, fmt.Errorf("ReadOne %v", err)
+	}
+	u := &proto.Content{
+		Id:   id,
+		Name: name,
+		CreatedAt: timestamppb.New(
+			created_at,
+		),
+		UpdatedAt: timestamppb.New(
+			updated_at,
+		),
 	}
 	return u, nil
 }
