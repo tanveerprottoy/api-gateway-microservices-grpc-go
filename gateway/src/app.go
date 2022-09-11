@@ -4,6 +4,12 @@ import (
 	"log"
 	"net/http"
 	"txp/gateway/src/grpc"
+	"txp/gateway/src/module/user"
+)
+
+// global var for use
+var (
+	UserModule *user.UserModule
 )
 
 // App struct
@@ -13,10 +19,16 @@ type App struct {
 
 // Init app
 func (a *App) Init() {
+	a.initModules()
 	a.router = &Router{}
 	a.router.Init()
 	grpc.InitClientConns()
 	grpc.InitServiceClients()
+}
+
+func (a *App) initModules() {
+	UserModule = &user.UserModule{}
+	UserModule.InitComponents()
 }
 
 // Run app

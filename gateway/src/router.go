@@ -3,7 +3,6 @@ package src
 import (
 	"net/http"
 	"txp/gateway/src/core/middleware"
-	"txp/gateway/src/module/user"
 	"txp/gateway/src/util"
 
 	"github.com/go-chi/chi"
@@ -35,30 +34,28 @@ func (r *Router) registerMiddlewares() {
 func (r *Router) registerUserRoutes(
 	version string,
 ) {
-	h := &user.UserHandler{}
-	h.InitDependencies()
 	r.Mux.Route(
 		util.ApiPattern+version+util.UsersPattern,
 		func(r chi.Router) {
 			r.Get(
 				util.RootPattern,
-				h.ReadMany,
+				UserModule.UserHandler.ReadMany,
 			)
 			r.Get(
 				util.RootPattern+"{id}",
-				h.ReadOne,
+				UserModule.UserHandler.ReadOne,
 			)
 			r.Post(
 				util.RootPattern,
-				h.Create,
+				UserModule.UserHandler.Create,
 			)
 			r.Patch(
 				util.RootPattern+"{id}",
-				h.Update,
+				UserModule.UserHandler.Update,
 			)
 			r.Delete(
 				util.RootPattern+"{id}",
-				h.Delete,
+				UserModule.UserHandler.Delete,
 			)
 		},
 	)

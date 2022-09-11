@@ -8,10 +8,6 @@ type UserHandler struct {
 	service *UserService
 }
 
-func (h *UserHandler) InitDependencies() {
-	h.service = &UserService{}
-}
-
 func (h *UserHandler) Create(
 	w http.ResponseWriter,
 	r *http.Request,
