@@ -1,10 +1,10 @@
-package src
+package app
 
 import (
 	"log"
 	"net/http"
-	"txp/gateway/src/grpc"
-	"txp/gateway/src/module/user"
+	"txp/gateway/app/grpc"
+	"txp/gateway/app/module/user"
 )
 
 // global var for use

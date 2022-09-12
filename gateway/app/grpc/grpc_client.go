@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"log"
-	_contentProto "txp/gateway/src/module/content/proto"
-	"txp/gateway/src/module/user/proto"
+	_contentProto "txp/gateway/app/module/content/proto"
+	"txp/gateway/app/module/user/proto"
 
 	_grpc "google.golang.org/grpc"
 )

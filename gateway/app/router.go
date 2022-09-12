@@ -1,9 +1,9 @@
-package src
+package app
 
 import (
 	"net/http"
-	"txp/gateway/src/core/middleware"
-	"txp/gateway/src/util"
+	"txp/gateway/pkg/middleware"
+	"txp/gateway/pkg/util"
 
 	"github.com/go-chi/chi"
 )

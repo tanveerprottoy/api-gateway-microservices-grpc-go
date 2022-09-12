@@ -1,9 +1,9 @@
 package main
 
-import "txp/gateway/src"
+import "txp/gateway/app"
 
 func main() {
-	app := &src.App{}
+	app := &app.App{}
 	app.Init()
 	app.Run()
 }

@@ -1,26 +1,25 @@
-package user
+package content
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
-	"txp/gateway/src/grpc"
-	"txp/gateway/src/module/user/dto"
-	"txp/gateway/src/module/user/proto"
-	"txp/gateway/src/util"
+	"txp/gateway/app/grpc"
+	"txp/gateway/app/module/content/dto"
+	"txp/gateway/app/module/content/proto"
+	"txp/gateway/pkg/util"
 
 	"github.com/go-chi/chi"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-type UserService struct {
+type ContentService struct {
 }
 
-func (s *UserService) Create(
+func (s *ContentService) Create(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	var b *dto.CreateUpdateUserDto
+	var b *dto.CreateUpdateContentDto
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		util.RespondError(http.StatusBadRequest, err, w)
@@ -28,9 +27,9 @@ func (s *UserService) Create(
 	}
 	// ctx := context.Background()
 	// send to service
-	u, err := grpc.UserServiceClient.CreateUser(
+	_, err = grpc.ContentServiceClient.CreateContent(
 		r.Context(),
-		&proto.User{
+		&proto.Content{
 			Name: b.Name,
 		},
 	)
@@ -42,21 +41,18 @@ func (s *UserService) Create(
 		)
 		return
 	}
-	log.Print(u)
 	util.Respond(
 		http.StatusCreated,
-		map[string]bool{
-			"created": true,
-		},
+		b,
 		w,
 	)
 }
 
-func (s *UserService) ReadMany(
+func (s *ContentService) ReadMany(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	u, err := grpc.UserServiceClient.ReadUsers(
+	u, err := grpc.ContentServiceClient.ReadContents(
 		r.Context(),
 		&proto.VoidParam{},
 	)
@@ -75,11 +71,12 @@ func (s *UserService) ReadMany(
 	)
 }
 
-func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
+func (s *ContentService) ReadOne(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	u, err := grpc.UserServiceClient.ReadUser(
+	u, err := grpc.ContentServiceClient.ReadContent(
 		r.Context(),
 		&wrapperspb.StringValue{Value: userId},
+		nil,
 	)
 	if err != nil {
 		util.RespondError(
@@ -96,12 +93,12 @@ func (s *UserService) ReadOne(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func (s *UserService) Update(
+func (s *ContentService) Update(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 	userId := chi.URLParam(r, util.UrlKeyId)
-	var b *dto.CreateUpdateUserDto
+	var b *dto.CreateUpdateContentDto
 	err := json.NewDecoder(r.Body).Decode(&b)
 	if err != nil {
 		util.RespondError(
@@ -111,11 +108,11 @@ func (s *UserService) Update(
 		)
 		return
 	}
-	u, err := grpc.UserServiceClient.UpdateUser(
+	u, err := grpc.ContentServiceClient.UpdateContent(
 		r.Context(),
-		&proto.UpdateUserParam{
+		&proto.UpdateContentParam{
 			Id: userId,
-			User: &proto.User{
+			Content: &proto.Content{
 				Name: b.Name,
 			},
 		},
@@ -136,7 +133,7 @@ func (s *UserService) Update(
 	)
 }
 
-func (s *UserService) Delete(w http.ResponseWriter, r *http.Request) {
+func (s *ContentService) Delete(w http.ResponseWriter, r *http.Request) {
 	userId := chi.URLParam(r, util.UrlKeyId)
 	u, err := grpc.UserServiceClient.DeleteUser(
 		r.Context(),
