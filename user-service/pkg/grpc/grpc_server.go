@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"txp/userservice/src/module/user"
-	"txp/userservice/src/module/user/proto"
+	"txp/userservice/app/module/user"
+	"txp/userservice/app/module/user/proto"
 
 	_grpc "google.golang.org/grpc"
 )

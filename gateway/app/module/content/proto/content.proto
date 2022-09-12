@@ -5,7 +5,7 @@ package contentPackage;
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./src/module/content/proto";
+option go_package = "./app/module/content/proto";
 
 message Content {
     string id = 1;

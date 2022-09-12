@@ -3,8 +3,8 @@ package app
 import (
 	"log"
 	"net/http"
-	"txp/gateway/app/grpc"
 	"txp/gateway/app/module/user"
+	"txp/gateway/pkg/grpc"
 )
 
 // global var for use

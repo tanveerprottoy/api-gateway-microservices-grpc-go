@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"txp/userservice/src/module/user/proto"
-	"txp/userservice/src/util"
+	"txp/userservice/app/module/user/proto"
+	"txp/userservice/pkg/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/types/known/timestamppb"

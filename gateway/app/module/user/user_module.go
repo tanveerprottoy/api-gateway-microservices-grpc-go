@@ -2,12 +2,12 @@ package user
 
 type UserModule struct {
 	UserHandler *UserHandler
-	Uservice    *UserService
+	UserService *UserService
 }
 
 func (m *UserModule) InitComponents() {
-	m.Uservice = &UserService{}
+	m.UserService = &UserService{}
 	m.UserHandler = &UserHandler{
-		m.Uservice,
+		m.UserService,
 	}
 }

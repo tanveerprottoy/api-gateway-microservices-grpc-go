@@ -3,9 +3,9 @@ package content
 import (
 	"encoding/json"
 	"net/http"
-	"txp/gateway/app/grpc"
 	"txp/gateway/app/module/content/dto"
 	"txp/gateway/app/module/content/proto"
+	"txp/gateway/pkg/grpc"
 	"txp/gateway/pkg/util"
 
 	"github.com/go-chi/chi"

@@ -1,8 +1,8 @@
-package src
+package app
 
 import (
-	"txp/userservice/src/data"
-	"txp/userservice/src/grpc"
+	"txp/userservice/pkg/data"
+	"txp/userservice/pkg/grpc"
 )
 
 // App struct

@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"txp/userservice/src/module/user/proto"
+	"txp/userservice/app/module/user/proto"
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )

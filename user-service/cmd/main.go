@@ -1,9 +1,9 @@
 package main
 
-import "txp/userservice/src"
+import "txp/userservice/app"
 
 func main() {
-	app := &src.App{}
+	app := &app.App{}
 	app.Init()
 }
 

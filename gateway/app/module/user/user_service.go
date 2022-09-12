@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"txp/gateway/app/grpc"
 	"txp/gateway/app/module/user/dto"
 	"txp/gateway/app/module/user/proto"
+	"txp/gateway/pkg/grpc"
 	"txp/gateway/pkg/util"
 
 	"github.com/go-chi/chi"

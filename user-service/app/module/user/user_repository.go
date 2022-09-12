@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"txp/userservice/src/data"
-	"txp/userservice/src/module/user/proto"
+	"txp/userservice/pkg/data"
+	"txp/userservice/app/module/user/proto"
 )
 
 type UserRepository struct {
