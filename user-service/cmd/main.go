@@ -3,8 +3,9 @@ package main
 import "txp/userservice/app"
 
 func main() {
-	app := &app.App{}
-	app.Init()
+	app := app.NewApp()
+	app.InitComponents()
+	app.Run()
 }
 
 // Multiply just to check unit test

@@ -1,13 +1,17 @@
 package user
 
 type UserModule struct {
-	UserRepository *UserRepository
+	UserRPC        *UserRPC
 	UserService    *UserService
+	UserRepository *UserRepository
 }
 
 func (m *UserModule) InitComponents() {
-	m.UserRepository = &UserRepository{}
-	m.UserService = &UserService{
+	m.UserRepository = new(UserRepository)
+	m.UserService = NewUserService(
 		m.UserRepository,
-	}
+	)
+	m.UserRPC = NewUserRPC(
+		m.UserService,
+	)
 }

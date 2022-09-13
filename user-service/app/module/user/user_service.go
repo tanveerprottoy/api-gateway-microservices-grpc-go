@@ -14,14 +14,22 @@ import (
 )
 
 type UserService struct {
-	repo *UserRepository
+	repository *UserRepository
+}
+
+func NewUserService(
+	repository *UserRepository,
+) *UserService {
+	s := new(UserService)
+	s.repository = repository
+	return s
 }
 
 func (s *UserService) Create(
 	ctx context.Context,
 	u *proto.User,
 ) (*proto.User, error) {
-	l, err := s.repo.Create(
+	l, err := s.repository.Create(
 		u,
 	)
 	if err != nil || l != "" {
@@ -39,7 +47,7 @@ func (s *UserService) ReadMany(
 ) (*proto.Users, error) {
 	log.Print("ReadMany rpc")
 	d := &proto.Users{}
-	rows, err := s.repo.ReadMany()
+	rows, err := s.repository.ReadMany()
 	var (
 		users      []*proto.User
 		id         string
@@ -78,7 +86,7 @@ func (s *UserService) ReadOne(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*proto.User, error) {
-	row := s.repo.ReadOne(
+	row := s.repository.ReadOne(
 		strVal.Value,
 	)
 	if row == nil {
@@ -113,7 +121,7 @@ func (s *UserService) Update(
 	ctx context.Context,
 	p *proto.UpdateUserParam,
 ) (*proto.User, error) {
-	r, err := s.repo.Update(
+	r, err := s.repository.Update(
 		p.Id,
 		p.User,
 	)
@@ -130,7 +138,7 @@ func (s *UserService) Delete(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*wrapperspb.BoolValue, error) {
-	r, err := s.repo.Delete(
+	r, err := s.repository.Delete(
 		strVal.Value,
 	)
 	if err != nil || r <= 0 {

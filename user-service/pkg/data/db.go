@@ -21,8 +21,7 @@ var (
 	err error
 )
 
-// Init db
-func Init() {
+func init() {
 	args := fmt.Sprintf(
 		"host=%s port=%d user=%s "+
 			"password=%s dbname=%s sslmode=disable",

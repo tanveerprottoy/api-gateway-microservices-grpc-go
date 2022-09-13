@@ -3,8 +3,8 @@ package main
 import "txp/gateway/app"
 
 func main() {
-	app := &app.App{}
-	app.Init()
+	app := new(app.App)
+	app.InitComponents()
 	app.Run()
 }
 

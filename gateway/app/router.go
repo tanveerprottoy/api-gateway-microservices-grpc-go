@@ -14,8 +14,11 @@ type Router struct {
 	TMux *http.ServeMux
 }
 
-func (r *Router) Init() {
-	r.Mux = chi.NewRouter()
+func NewRouter(
+	mux *chi.Mux,
+) *Router {
+	r := &Router{}
+	r.Mux = mux
 	r.registerMiddlewares()
 	r.registerUserRoutes(
 		util.V1,
@@ -23,6 +26,7 @@ func (r *Router) Init() {
 	/* r.registerContentRoutes(
 		util.V1,
 	) */
+	return r
 }
 
 func (r *Router) registerMiddlewares() {

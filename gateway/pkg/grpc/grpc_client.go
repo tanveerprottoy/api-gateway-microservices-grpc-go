@@ -14,7 +14,12 @@ var (
 	ContentServiceClient _contentProto.ContentServiceClient
 )
 
-func InitClientConns() {
+func init() {
+	initClientConns()
+	initServiceClients()
+}
+
+func initClientConns() {
 	var err error
 	Conns[0], err = _grpc.Dial(
 		"0.0.0.0:5000",
@@ -34,7 +39,7 @@ func InitClientConns() {
 	}
 }
 
-func InitServiceClients() {
+func initServiceClients() {
 	UserServiceClient = proto.NewUserServiceClient(
 		Conns[0],
 	)

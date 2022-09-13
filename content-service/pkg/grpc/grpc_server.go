@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"txp/userservice/app/module/user"
-	"txp/userservice/app/module/user/proto"
+	"txp/contentservice/src/module/content"
+	"txp/contentservice/src/module/content/proto"
 
 	_grpc "google.golang.org/grpc"
 )
@@ -18,7 +18,7 @@ type GRPCServer struct {
 func NewGRPCServer() *GRPCServer {
 	var err error
 	g := new(GRPCServer)
-	g.lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 5000))
+	g.lis, err = net.Listen("tcp", fmt.Sprintf(":%d", 5001))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -27,9 +27,9 @@ func NewGRPCServer() *GRPCServer {
 }
 
 func (g *GRPCServer) RegisterRPCs(
-	r *user.UserRPC,
+	r *content.ContentRPC,
 ) {
-	proto.RegisterUserServiceServer(
+	proto.RegisterContentServiceServer(
 		g.Server,
 		r,
 	)

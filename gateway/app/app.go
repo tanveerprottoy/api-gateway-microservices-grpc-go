@@ -4,10 +4,11 @@ import (
 	"log"
 	"net/http"
 	"txp/gateway/app/module/user"
-	"txp/gateway/pkg/grpc"
+
+	"github.com/go-chi/chi"
 )
 
-// global var for use
+// global var
 var (
 	UserModule *user.UserModule
 )
@@ -17,18 +18,17 @@ type App struct {
 	router *Router
 }
 
-// Init app
-func (a *App) Init() {
-	a.initModules()
-	a.router = &Router{}
-	a.router.Init()
-	grpc.InitClientConns()
-	grpc.InitServiceClients()
+func (a *App) initModules() {
+	UserModule = new(user.UserModule)
+	UserModule.InitComponents()
 }
 
-func (a *App) initModules() {
-	UserModule = &user.UserModule{}
-	UserModule.InitComponents()
+// Init app
+func (a *App) InitComponents() {
+	a.initModules()
+	a.router = NewRouter(
+		chi.NewRouter(),
+	)
 }
 
 // Run app

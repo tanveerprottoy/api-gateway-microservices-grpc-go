@@ -12,11 +12,12 @@ type UserRPC struct {
 	service *UserService
 }
 
-func (h *UserRPC) InitDependencies() {
-	r := &UserRepository{}
-	h.service = &UserService{
-		repo: r,
-	}
+func NewUserRPC(
+	service *UserService,
+) *UserRPC {
+	s := new(UserRPC)
+	s.service = service
+	return s
 }
 
 func (h *UserRPC) CreateUser(
