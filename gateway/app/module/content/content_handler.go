@@ -6,8 +6,12 @@ type ContentHandler struct {
 	service *ContentService
 }
 
-func (h *ContentHandler) InitDependencies() {
-	h.service = &ContentService{}
+func NewContentHandler(
+	service *ContentService,
+) *ContentHandler {
+	h := new(ContentHandler)
+	h.service = service
+	return h
 }
 
 func (h *ContentHandler) Create(

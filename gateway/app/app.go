@@ -3,14 +3,14 @@ package app
 import (
 	"log"
 	"net/http"
+	"txp/gateway/app/module/content"
 	"txp/gateway/app/module/user"
-
-	"github.com/go-chi/chi"
 )
 
 // global var
 var (
-	UserModule *user.UserModule
+	UserModule    *user.UserModule
+	ContentModule *content.ContentModule
 )
 
 // App struct
@@ -21,14 +21,14 @@ type App struct {
 func (a *App) initModules() {
 	UserModule = new(user.UserModule)
 	UserModule.InitComponents()
+	ContentModule = new(content.ContentModule)
+	ContentModule.InitComponents()
 }
 
 // Init app
 func (a *App) InitComponents() {
 	a.initModules()
-	a.router = NewRouter(
-		chi.NewRouter(),
-	)
+	a.router = NewRouter()
 }
 
 // Run app

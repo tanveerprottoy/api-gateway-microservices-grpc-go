@@ -14,18 +14,16 @@ type Router struct {
 	TMux *http.ServeMux
 }
 
-func NewRouter(
-	mux *chi.Mux,
-) *Router {
+func NewRouter() *Router {
 	r := &Router{}
-	r.Mux = mux
+	r.Mux = chi.NewRouter()
 	r.registerMiddlewares()
 	r.registerUserRoutes(
 		util.V1,
 	)
-	/* r.registerContentRoutes(
+	r.registerContentRoutes(
 		util.V1,
-	) */
+	)
 	return r
 }
 
@@ -60,6 +58,36 @@ func (r *Router) registerUserRoutes(
 			r.Delete(
 				util.RootPattern+"{id}",
 				UserModule.UserHandler.Delete,
+			)
+		},
+	)
+}
+
+func (r *Router) registerContentRoutes(
+	version string,
+) {
+	r.Mux.Route(
+		util.ApiPattern+version+util.ContentsPattern,
+		func(r chi.Router) {
+			r.Get(
+				util.RootPattern,
+				ContentModule.ContentHandler.ReadMany,
+			)
+			r.Get(
+				util.RootPattern+"{id}",
+				ContentModule.ContentHandler.ReadOne,
+			)
+			r.Post(
+				util.RootPattern,
+				ContentModule.ContentHandler.Create,
+			)
+			r.Patch(
+				util.RootPattern+"{id}",
+				ContentModule.ContentHandler.Update,
+			)
+			r.Delete(
+				util.RootPattern+"{id}",
+				ContentModule.ContentHandler.Delete,
 			)
 		},
 	)

@@ -8,6 +8,14 @@ type UserHandler struct {
 	service *UserService
 }
 
+func NewUserHandler(
+	service *UserService,
+) *UserHandler {
+	h := new(UserHandler)
+	h.service = service
+	return h
+}
+
 func (h *UserHandler) Create(
 	w http.ResponseWriter,
 	r *http.Request,

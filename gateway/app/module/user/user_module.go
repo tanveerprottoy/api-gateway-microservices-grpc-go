@@ -6,8 +6,8 @@ type UserModule struct {
 }
 
 func (m *UserModule) InitComponents() {
-	m.UserService = &UserService{}
-	m.UserHandler = &UserHandler{
+	m.UserService = new(UserService)
+	m.UserHandler = NewUserHandler(
 		m.UserService,
-	}
+	)
 }
