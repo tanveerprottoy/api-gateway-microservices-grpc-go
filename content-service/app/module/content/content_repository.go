@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"txp/contentservice/src/data"
-	"txp/contentservice/src/module/content/proto"
+	"txp/contentservice/pkg/data"
+	"txp/contentservice/app/module/content/proto"
 )
 
 type ContentRepository struct {

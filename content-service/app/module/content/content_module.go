@@ -1,13 +1,17 @@
 package content
 
 type ContentModule struct {
-	UserRepository *UserRepository
-	UserService    *UserService
+	ContentRPC        *ContentRPC
+	ContentService    *ContentService
+	ContentRepository *ContentRepository
 }
 
-func (m *UserModule) InitComponents() {
-	m.UserRepository = &UserRepository{}
-	m.UserService = &UserService{
-		m.UserRepository,
-	}
+func (m *ContentModule) InitComponents() {
+	m.ContentRepository = new(ContentRepository)
+	m.ContentService = NewContentService(
+		m.ContentRepository,
+	)
+	m.ContentRPC = NewContentRPC(
+		m.ContentService,
+	)
 }

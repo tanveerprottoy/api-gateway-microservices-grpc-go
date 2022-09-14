@@ -2,7 +2,7 @@ package content
 
 import (
 	"context"
-	"txp/contentservice/src/module/content/proto"
+	"txp/contentservice/app/module/content/proto"
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -12,11 +12,12 @@ type ContentRPC struct {
 	service *ContentService
 }
 
-func (h *ContentRPC) InitDependencies() {
-	r := &ContentRepository{}
-	h.service = &ContentService{
-		repo: r,
-	}
+func NewContentRPC(
+	service *ContentService,
+) *ContentRPC {
+	s := new(ContentRPC)
+	s.service = service
+	return s
 }
 
 func (h *ContentRPC) CreateContent(

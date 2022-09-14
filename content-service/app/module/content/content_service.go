@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"txp/contentservice/src/module/content/proto"
-	"txp/contentservice/src/util"
+	"txp/contentservice/app/module/content/proto"
+	"txp/contentservice/pkg/util"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -14,14 +14,22 @@ import (
 )
 
 type ContentService struct {
-	repo *ContentRepository
+	repository *ContentRepository
+}
+
+func NewContentService(
+	repository *ContentRepository,
+) *ContentService {
+	s := new(ContentService)
+	s.repository = repository
+	return s
 }
 
 func (s *ContentService) Create(
 	ctx context.Context,
 	u *proto.Content,
 ) (*proto.Content, error) {
-	l, err := s.repo.Create(
+	l, err := s.repository.Create(
 		u,
 	)
 	if err != nil || l != "" {
@@ -39,9 +47,9 @@ func (s *ContentService) ReadMany(
 ) (*proto.Contents, error) {
 	log.Print("ReadMany rpc")
 	d := &proto.Contents{}
-	rows, err := s.repo.ReadMany()
+	rows, err := s.repository.ReadMany()
 	var (
-		contents      []*proto.Content
+		contents   []*proto.Content
 		id         string
 		name       string
 		created_at time.Time
@@ -78,7 +86,7 @@ func (s *ContentService) ReadOne(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*proto.Content, error) {
-	row := s.repo.ReadOne(
+	row := s.repository.ReadOne(
 		strVal.Value,
 	)
 	if row == nil {
@@ -113,7 +121,7 @@ func (s *ContentService) Update(
 	ctx context.Context,
 	p *proto.UpdateContentParam,
 ) (*proto.Content, error) {
-	r, err := s.repo.Update(
+	r, err := s.repository.Update(
 		p.Id,
 		p.Content,
 	)
@@ -130,7 +138,7 @@ func (s *ContentService) Delete(
 	ctx context.Context,
 	strVal *wrapperspb.StringValue,
 ) (*wrapperspb.BoolValue, error) {
-	r, err := s.repo.Delete(
+	r, err := s.repository.Delete(
 		strVal.Value,
 	)
 	if err != nil || r <= 0 {

@@ -1,16 +1,39 @@
-package src
+package app
 
 import (
-	"txp/contentservice/src/grpc"
+	"txp/contentservice/app/module/content"
+	"txp/contentservice/pkg/grpc"
+)
+
+var (
+	ContentModule *content.ContentModule
 )
 
 // App struct
 type App struct {
+	grpcServer *grpc.GRPCServer
 }
 
-// Init app
-func (a *App) Init() {
-	grpc.InitServer()
-	grpc.RegisterRPCs()
-	grpc.Run()
+func NewApp() *App {
+	a := new(App)
+	a.grpcServer = grpc.NewGRPCServer()
+	return a
+}
+
+// InitComponents app
+func (a *App) InitComponents() {
+	a.initModules()
+	a.grpcServer.RegisterRPCs(
+		ContentModule.ContentRPC,
+	)
+}
+
+// Run app
+func (a *App) Run() {
+	a.grpcServer.Run()
+}
+
+func (a *App) initModules() {
+	ContentModule = new(content.ContentModule)
+	ContentModule.InitComponents()
 }

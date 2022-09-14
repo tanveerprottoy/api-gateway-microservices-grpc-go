@@ -28,7 +28,7 @@ func (s *UserService) Create(
 	}
 	// ctx := context.Background()
 	// send to service
-	u, err := grpc.UserServiceClient.CreateUser(
+	e, err := grpc.UserServiceClient.CreateUser(
 		r.Context(),
 		&proto.User{
 			Name: b.Name,
@@ -42,12 +42,10 @@ func (s *UserService) Create(
 		)
 		return
 	}
-	log.Print(u)
+	log.Print(e)
 	util.Respond(
 		http.StatusCreated,
-		map[string]bool{
-			"created": true,
-		},
+		b,
 		w,
 	)
 }

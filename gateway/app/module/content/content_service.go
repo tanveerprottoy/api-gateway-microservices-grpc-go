@@ -2,6 +2,7 @@ package content
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"txp/gateway/app/module/content/dto"
 	"txp/gateway/app/module/content/proto"
@@ -27,12 +28,13 @@ func (s *ContentService) Create(
 	}
 	// ctx := context.Background()
 	// send to service
-	_, err = grpc.ContentServiceClient.CreateContent(
+	e, err := grpc.ContentServiceClient.CreateContent(
 		r.Context(),
 		&proto.Content{
 			Name: b.Name,
 		},
 	)
+	log.Print(e)
 	if err != nil {
 		util.RespondError(
 			http.StatusInternalServerError,
