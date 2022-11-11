@@ -29,10 +29,10 @@ func (s *UserService) Create(
 	ctx context.Context,
 	u *proto.User,
 ) (*proto.User, error) {
-	l, err := s.repository.Create(
+	lastId, err := s.repository.Create(
 		u,
 	)
-	if err != nil || l != "" {
+	if err != nil || lastId != "" {
 		return nil, util.RespondError(
 			codes.Unknown,
 			util.UnknownError,
@@ -48,6 +48,12 @@ func (s *UserService) ReadMany(
 	log.Print("ReadMany rpc")
 	d := &proto.Users{}
 	rows, err := s.repository.ReadMany()
+	if err != nil {
+		return nil, util.RespondError(
+			codes.Unknown,
+			util.UnknownError,
+		)
+	}
 	var (
 		users      []*proto.User
 		id         string
